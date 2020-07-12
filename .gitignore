@@ -216,5 +216,10 @@ cython_debug/
 
 .idea/
 data/
+data_png/
+torch_fastrcnn/data
 .DS_Store
 images.pkl
+data_out/
+data_mask/
+data_annotation/
