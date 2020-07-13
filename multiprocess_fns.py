@@ -1,10 +1,12 @@
 from PIL import Image
 import numpy as np
 import cv2
-from globals import data_dir, R, C
+from scipy import ndimage
+
+from globals import data_dir, R, C, avg_ksize
 
 
-# from multiprocessing import Pool, get_context
+from multiprocessing import get_context
 
 
 def get_img(dirname):
@@ -46,7 +48,15 @@ def unsharp(image):
     return cv2.filter2D(image, -1, unsharp_kernel)
 
 
+def run_avg(x):
+    return cv2.blur(x, (avg_ksize, avg_ksize))
+
+
+def run_grey_dilation(x):
+    return ndimage.morphology.grey_dilation(x, size=(avg_ksize * 2, avg_ksize * 2))
+
+
 def pmap(f, things):
-    # with get_context('spawn').Pool() as p:
-    #     return list(p.map(f, things))
-    return list(map(f, things))
+    with get_context('spawn').Pool() as p:
+        return list(p.map(f, things))
+#     return list(map(f, things))
