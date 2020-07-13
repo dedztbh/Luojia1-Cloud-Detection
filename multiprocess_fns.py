@@ -53,7 +53,7 @@ def run_avg(x):
 
 
 def run_grey_dilation(x):
-    return ndimage.morphology.grey_dilation(x, size=(avg_ksize * 2, avg_ksize * 2))
+    return ndimage.morphology.grey_dilation(x, size=(10, 10))
 
 
 def pmap(f, things):
