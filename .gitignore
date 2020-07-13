@@ -217,7 +217,7 @@ cython_debug/
 .idea/
 data/
 data_png/
-torch_fastrcnn/data
+torch_fastrcnn/
 .DS_Store
 images.pkl
 data_out/
