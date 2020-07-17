@@ -33,14 +33,12 @@ def remove_small_obj(img):
     # here, it's a fixed value, but you can set it as you want, eg the mean of the sizes or whatever
     min_size = 200
 
-    # your answer image
-    img2 = np.zeros(output.shape)
     # for every component in the image, you keep it only if it's above min_size
     for i in range(0, nb_components):
-        if sizes[i] >= min_size:
-            img2[output == i + 1] = 1
+        if sizes[i] < min_size:
+            img[output == i + 1] = 0
 
-    return img2
+    return img
 
 
 def unsharp(image):
@@ -51,12 +49,15 @@ def unsharp(image):
 def run_avg(x):
     return cv2.blur(x, (avg_ksize, avg_ksize))
 
+def run_gaussian(x):
+    return cv2.GaussianBlur(x, (199, 199), 200)
 
-def run_grey_dilation(x):
-    return ndimage.morphology.grey_dilation(x, size=(10, 10))
+
+def run_regularize_shape(x):
+    return ndimage.morphology.grey_dilation(x, size=(200, 200))
 
 
 def pmap(f, things):
     with get_context('spawn').Pool() as p:
         return list(p.map(f, things))
-#     return list(map(f, things))
+    # return list(map(f, things))
