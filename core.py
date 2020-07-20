@@ -42,7 +42,7 @@ def lowpass(x):
     return x
 
 def run_avg(x):
-    return cv2.blur(x, (5, 5))
+    return cv2.blur(x, (15, 15))
 
 def highpass(x):
     shape = x.shape
@@ -66,4 +66,4 @@ def run_regularize_shape(x):
     return ndimage.morphology.grey_dilation(x, size=(100, 100))
 
 def run_gaussian(x):
-    return cv2.GaussianBlur(x, (99, 99), 100)
+    return cv2.GaussianBlur(x, (133, 133), 2000)
