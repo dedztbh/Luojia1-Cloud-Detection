@@ -13,7 +13,7 @@ Right now the cloud mask is taking its shape. Then are some noise reduction with
 The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, I run a grey dilation and gaussian blur to extend the predicted area with cloud.
 
 Here is a visualization of each step on an example image. Note that all images shown here are 5 times brighter.
-![flowchart](https://github.com/DEDZTBH/luojia1-cloud-detection/master/flowchart.png)
+![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/flowchart.png)
 
 For implementation, usage, and more examples, please refer to main.ipynb and core.py
 
