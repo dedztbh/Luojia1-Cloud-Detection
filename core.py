@@ -35,35 +35,58 @@ def unsharp(image):
     ])
     return cv2.filter2D(image, -1, unsharp_kernel)    
 
+
 def lowpass(x):
+    
+    hi = 60 + x.mean() * 5
+    
     shape = x.shape
-    x = np.where(x <= 70, x, 0)
+    x = np.where(x <= hi, x, 0)
     x.shape = shape
     return x
+
 
 def run_avg(x):
-    return cv2.blur(x, (15, 15))
+    
+    ksize = 15
+    
+    return cv2.blur(x, (ksize, ksize))
+
 
 def highpass(x):
+    
+    lo = 15 - x.mean() * 2
+    
     shape = x.shape
-    x = np.where(14 <= x, x, 0)
+    x = np.where(lo <= x, x, 0)
     x.shape = shape
     return x
+
 
 # From https://stackoverflow.com/questions/42798659/how-to-remove-small-connected-objects-using-opencv/42812226
 def remove_small_obj(img):
+    
+    obj_threshold = 196
+    
     nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img, connectivity=8)
     sizes = stats[1:, -1]
-    nb_components = nb_components - 1
-        
+    nb_components = nb_components - 1 
     for i in range(0, nb_components):
-        if sizes[i] < 200:
+        if sizes[i] < obj_threshold:
             img[output == i + 1] = 0
-
     return img
 
+
 def run_regularize_shape(x):
-    return ndimage.morphology.grey_dilation(x, size=(100, 100))
+    
+    gdsize = round(80 - x.mean())
+    
+    return ndimage.morphology.grey_dilation(x, size=(gdsize, gdsize))
+
 
 def run_gaussian(x):
-    return cv2.GaussianBlur(x, (133, 133), 2000)
+    
+    gksize = 125
+    gstd = 2000
+    
+    return cv2.GaussianBlur(x, (gksize, gksize), gstd)
