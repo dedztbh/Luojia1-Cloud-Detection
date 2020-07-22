@@ -15,12 +15,20 @@ The mask now predicts where there is certainly cloud, but there is most likely c
 Here is a visualization of each step on an example image. Note that all images shown here are 5 times brighter.
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/flowchart.png)
 
-For implementation, usage, and more examples, please refer to main.ipynb and core.py
+Subtraction after each operation:
+![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff.png)
+
+## Files
+- main.ipynp: Selected 12 images and shows them and their stats at each step. Also stitched images and their cloud mask together at last.
+- batch.ipynp: Similar to main.ipynp but choosing random pictures
+- core.py: Core implementation of algorithm
+- flowchart_gen.py: Used to generate the diagram above
+- image_tester.py: Generate cloud mask for specific image
 
 ## Data
 All Luojia-1 satellite data is found here: http://59.175.109.173:8888/
 
-The image downloaded are stored in a stretched int32 format that can be converted back to float point with formula L = DN^(3/2)*10^-10 where DN is the digital number and L is the actual radiance in W/(m^2 * sr * μm). My current set of parameters works with 10^5 L.
+The image downloaded are stored in a stretched int32 format that can be converted back to floating point with formula L = DN^(3/2)*10^-10 where DN is the digital number and L is the actual radiance in W/(m^2 * sr * μm). My current set of parameters works with 10^5 L.
 
 ## Parameters
-Yes, these are mostly hard coded for now. I am trying to see if it is possible to use different thresholds for individual images. 
+Yes, these are mostly hardcoded for now. I am trying to see if it is possible to use different thresholds for individual images. 

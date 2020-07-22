@@ -38,7 +38,7 @@ def unsharp(image: np.ndarray):
 
 
 def lowpass(x: np.ndarray):
-    hi = 60 + x.mean() * 5
+    hi = 72.5 - x.mean() * 2.5
 
     shape = x.shape
     x = np.where(x <= hi, x, 0)
@@ -47,13 +47,13 @@ def lowpass(x: np.ndarray):
 
 
 def average_blur(x: np.ndarray):
-    ksize = 15
+    ksize = 13
 
     return cv2.blur(x, (ksize, ksize))
 
 
 def highpass(x: np.ndarray):
-    lo = 15 - x.mean() * 2
+    lo = 15 - x.mean() * 2.5
 
     shape = x.shape
     x = np.where(lo <= x, x, 0)
@@ -63,10 +63,11 @@ def highpass(x: np.ndarray):
 
 # From https://stackoverflow.com/questions/42798659/how-to-remove-small-connected-objects-using-opencv/42812226
 def remove_small_obj(img: np.ndarray):
-    obj_threshold = 196
-
     nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img.astype(np.uint8), connectivity=8)
     sizes = stats[1:, -1]
+    
+    obj_threshold = np.mean(sizes)
+    
     nb_components = nb_components - 1
     for i in range(0, nb_components):
         if sizes[i] < obj_threshold:
@@ -75,7 +76,7 @@ def remove_small_obj(img: np.ndarray):
 
 
 def grey_dilation(x: np.ndarray):
-    gdsize = round(80 - x.mean())
+    gdsize = round(80 - x.mean() * 5)
 
     return ndimage.morphology.grey_dilation(x, (gdsize, gdsize))
 
@@ -87,10 +88,12 @@ def gaussian_blur(x: np.ndarray):
     return cv2.GaussianBlur(x, (gksize, gksize), gstd)
 
 
-cloud_mask_generate_procedure = [unsharp,
-                                 lowpass,
-                                 average_blur,
-                                 highpass,
-                                 remove_small_obj,
-                                 grey_dilation,
-                                 gaussian_blur]
+cloud_mask_generate_procedure = [
+    unsharp,
+    lowpass,
+    average_blur,
+    highpass,
+    remove_small_obj,
+    grey_dilation,
+    gaussian_blur
+]
