@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 from copy import deepcopy
+import cv2
 
 from core import cloud_mask_generate_procedure
 
@@ -14,13 +15,13 @@ def main():
     np_img = np.asarray(im.convert('L').getdata()).astype(np.float32)
     w, h = im.size
     np_img.shape = (h, w)
-    # img = cv2.resize(np_img, (2000, 2000))
-    img = deepcopy(np_img)
+    img = cv2.resize(np_img, (2000, 2000))
+    # img = deepcopy(np_img)
 
     for f in cloud_mask_generate_procedure:
         img = f(img)
 
-    # img = cv2.resize(img, (w, h)).astype(np.uint8)
+    img = cv2.resize(img, (w, h)).astype(np.uint8)
     img = img.astype(np.uint8)
 
     save_img(img)

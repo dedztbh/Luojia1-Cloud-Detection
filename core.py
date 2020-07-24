@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 import cv2
 from scipy import ndimage
+import slidingwindow as sw
 
 from global_const import data_dir, R, C
 
@@ -26,6 +27,24 @@ def pmap(f, things):
     # return np.asarray(list(map(f, things)))
 
 
+def lowpass_single(x):
+    hi = 72.5 - x.mean() * 2.5
+
+    shape = x.shape
+    x = np.where(x <= hi, x, 0)
+    x.shape = shape
+    return x
+
+
+def highpass_single(x):
+    lo = 15 - x.mean() * 2.5
+
+    shape = x.shape
+    x = np.where(lo <= x, x, 0)
+    x.shape = shape
+    return x
+
+
 # These are the steps to run on an image to generate cloud mask.
 
 def unsharp(image: np.ndarray):
@@ -38,11 +57,9 @@ def unsharp(image: np.ndarray):
 
 
 def lowpass(x: np.ndarray):
-    hi = 72.5 - x.mean() * 2.5
-
-    shape = x.shape
-    x = np.where(x <= hi, x, 0)
-    x.shape = shape
+    windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [lowpass_single])
+    for window in windows:
+        x[window.indices()] = window.apply(x)
     return x
 
 
@@ -53,11 +70,9 @@ def average_blur(x: np.ndarray):
 
 
 def highpass(x: np.ndarray):
-    lo = 15 - x.mean() * 2.5
-
-    shape = x.shape
-    x = np.where(lo <= x, x, 0)
-    x.shape = shape
+    windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [highpass_single])
+    for window in windows:
+        x[window.indices()] = window.apply(x)
     return x
 
 
@@ -65,9 +80,9 @@ def highpass(x: np.ndarray):
 def remove_small_obj(img: np.ndarray):
     nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img.astype(np.uint8), connectivity=8)
     sizes = stats[1:, -1]
-    
+
     obj_threshold = np.mean(sizes)
-    
+
     nb_components = nb_components - 1
     for i in range(0, nb_components):
         if sizes[i] < obj_threshold:
