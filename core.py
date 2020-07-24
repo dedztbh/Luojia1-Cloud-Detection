@@ -28,7 +28,7 @@ def pmap(f, things):
 
 
 def lowpass_single(x):
-    hi = 72.5 - x.mean() * 2.5
+    hi = 73 - x.mean() * 3
 
     shape = x.shape
     x = np.where(x <= hi, x, 0)
@@ -37,7 +37,7 @@ def lowpass_single(x):
 
 
 def highpass_single(x):
-    lo = 15 - x.mean() * 2.5
+    lo = 15 - x.mean() * 3
 
     shape = x.shape
     x = np.where(lo <= x, x, 0)
@@ -91,7 +91,7 @@ def remove_small_obj(img: np.ndarray):
 
 
 def grey_dilation(x: np.ndarray):
-    gdsize = round(80 - x.mean() * 5)
+    gdsize = 125
 
     return ndimage.morphology.grey_dilation(x, (gdsize, gdsize))
 

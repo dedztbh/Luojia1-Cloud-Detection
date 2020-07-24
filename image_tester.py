@@ -1,6 +1,5 @@
 from PIL import Image
 import numpy as np
-from copy import deepcopy
 import cv2
 
 from core import cloud_mask_generate_procedure
