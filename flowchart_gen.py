@@ -16,14 +16,14 @@ def save_img(img, name):
 def show_imgs(imgs, name='flowchart'):
     rows = 2
     columns = len(imgs) // rows
-    w = columns * 8
-    h = rows * 8
+    w = columns * 16
+    h = rows * 16
     fig = plt.figure(figsize=(w, h))
     idx = 0
     for i in range(1, columns * rows + 1):
         ax = fig.add_subplot(rows, columns, i)
         ax.title.set_text(imgs[idx][0])
-        plt.imshow(Image.fromarray(imgs[idx][1] * 5).resize((1000, 1000)).convert('L'))
+        plt.imshow(Image.fromarray(imgs[idx][1] * 5).convert('L'))
         idx += 1
     plt.savefig('{}.png'.format(name), bbox_inches='tight')
 
@@ -41,6 +41,9 @@ def main():
 
     show_imgs(imgs)
     show_imgs(imgdiffs, name='diff')
+
+    imgdiffs = [(name, -imgdiff) for (name, imgdiff) in imgdiffs]
+    show_imgs(imgdiffs, name='diff2')
 
 
 if __name__ == '__main__':

@@ -18,6 +18,9 @@ Here is a visualization of each step on an example image. Note that all images s
 Subtraction after each operation:
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff.png)
 
+Addition after each operation:
+![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff2.png)
+
 ## Files
 - main.ipynp: Selected 12 images and shows them and their stats at each step. Also stitched images and their cloud mask together at last.
 - batch.ipynp: Similar to main.ipynp but choosing random pictures
