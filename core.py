@@ -27,7 +27,7 @@ def pmap(f, things):
     # return np.asarray(list(map(f, things)))
 
 
-def lowpass_single(x):
+def remove_bright_single(x):
     hi = 73 - x.mean() * 3
 
     shape = x.shape
@@ -36,7 +36,7 @@ def lowpass_single(x):
     return x
 
 
-def highpass_single(x):
+def remove_dark_single(x):
     lo = 15 - x.mean() * 3
 
     shape = x.shape
@@ -56,8 +56,8 @@ def unsharp(image: np.ndarray):
     return cv2.filter2D(image, -1, unsharp_kernel)
 
 
-def lowpass(x: np.ndarray):
-    windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [lowpass_single])
+def remove_bright(x: np.ndarray):
+    windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [remove_bright_single])
     for window in windows:
         x[window.indices()] = window.apply(x)
     return x
@@ -69,8 +69,8 @@ def average_blur(x: np.ndarray):
     return cv2.blur(x, (ksize, ksize))
 
 
-def highpass(x: np.ndarray):
-    windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [highpass_single])
+def remove_dark(x: np.ndarray):
+    windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [remove_dark_single])
     for window in windows:
         x[window.indices()] = window.apply(x)
     return x
@@ -81,7 +81,7 @@ def remove_small_obj(img: np.ndarray):
     nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img.astype(np.uint8), connectivity=8)
     sizes = stats[1:, -1]
 
-    obj_threshold = np.mean(sizes)
+    obj_threshold = max(np.mean(sizes), 125)
 
     nb_components = nb_components - 1
     for i in range(0, nb_components):
@@ -105,10 +105,10 @@ def gaussian_blur(x: np.ndarray):
 
 cloud_mask_generate_procedure = [
     unsharp,
-    lowpass,
+    remove_bright,
     average_blur,
-    highpass,
+    remove_dark,
     remove_small_obj,
     grey_dilation,
-    gaussian_blur
+    gaussian_blur  # optional for binary mask
 ]

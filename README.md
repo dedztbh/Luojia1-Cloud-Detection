@@ -4,13 +4,13 @@ Detect cloud in nighttime images from Luojia-1 satellite using basic filters.
 ## Algorithm
 Unsharp mask is usually used to improve clarity of an image. When I apply it to the nighttime satellite image, I found that streetlights are brought out by the filter while the cloud stays pretty much the same. 
 
-Then lowpass filter that removes all pixels over a threshold (image is chunked and each chunk have different threshold). The image is now only left with clouds and dimmer parts of the streetlights. 
+Then removes all pixels over a threshold (image is chunked and each chunk have different threshold). The image is now only left with clouds and dimmer parts of the streetlights. 
 
 Then average blurring which removes streetlights because their bright pixels are scarce (and very bright pixels are already removed) so they are averaged out.
  
-Right now the cloud mask is taking its shape. Then are some noise reduction with highpass filter (chunked) and remove small connected components. 
+Right now the cloud mask is taking its shape. Then some noise reduction by remove dark pixels (different threshold for each chunk) and remove small connected components. 
 
-The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, I run a grey dilation and gaussian blur to extend the predicted area with cloud.
+The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, I run a grey dilation and gaussian blur (only if not binary) to extend the predicted area with cloud.
 
 Here is a visualization of each step on an example image. Note that all images shown here are 5 times brighter.
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/flowchart.png)
