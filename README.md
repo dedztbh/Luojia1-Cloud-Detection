@@ -21,6 +21,19 @@ Subtraction after each operation:
 Addition after each operation:
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff2.png)
 
+Here is the full list of operations in core.py:
+```
+cloud_mask_generate_procedure = [
+    unsharp,
+    remove_bright,
+    average_blur,
+    remove_dark,
+    remove_small_obj,
+    grey_dilation,
+    gaussian_blur  # optional for binary mask
+]
+```
+
 ## Files
 - main.ipynp: Selected 12 images and shows them and their stats at each step. Also stitched images and their cloud mask together at last.
 - batch.ipynp: Similar to main.ipynp but choosing random pictures
@@ -34,4 +47,11 @@ All Luojia-1 satellite data is found here: http://59.175.109.173:8888/
 The image downloaded are stored in a stretched int32 format that can be converted back to floating point with formula L = DN^(3/2)*10^-10 where DN is the digital number and L is the actual radiance in W/(m^2 * sr * μm). My current set of parameters works with 10^5 L.
 
 ## Parameters
-I am trying to see if it is possible to use different thresholds for individual images. 
+Since images from other satellite have different properties, my current set of parameters might not work for other satellite images. Here are some the list of parameters located in core.py:
+
+- hi (in remove_bright_single): The threshold which all pixels with value over it is removed in step remove_bright.
+- ksize (in average_blur): The kernel size used for step average_blur. It should be odd, and higher value remove streetlight better but also is more likely to remove cloud.
+- lo (in remove_dark_single): The threshold which all pixels with value below it is removed in step remove_dark.
+- obj_threshold (in remove_small_obj): The threshold which all connected components smaller with pixel number small than it is removed. Higher value remove small bright noises but is also more likely to remove small cloud.
+- gdsize (in grey_dilation): The size of grey dilation. Use larger value for more conservative prediction.
+- gksize, gstd (in gaussian_blur): The kernel size (odd) and std for gaussian_blur.
