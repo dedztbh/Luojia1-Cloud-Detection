@@ -1,6 +1,6 @@
 from PIL import Image
 
-from core import get_img, cloud_mask_generate_procedure
+from core import get_img, cloud_mask_generate_procedure_binary
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -32,7 +32,7 @@ def main():
     img = get_img('LuoJia1-01_LR201809083317_20180907212040_HDR_0033')
     imgs = [('Original', img)]
     imgdiffs = [('Original', np.zeros((2000, 2000)))]
-    for f in cloud_mask_generate_procedure:
+    for f in cloud_mask_generate_procedure_binary:
         img2 = deepcopy(img)
         img = f(img)
         title = f.__name__.replace('_', ' ').title()

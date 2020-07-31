@@ -76,12 +76,22 @@ def remove_dark(x: np.ndarray):
     return x
 
 
+# Use if we want binary mask
+def to_binary(x, threshold=0):
+    shape = x.shape
+    x = np.where(x > threshold, 1, 0)
+    x.shape = shape
+    return x.astype(np.uint8)
+
+
 # From https://stackoverflow.com/questions/42798659/how-to-remove-small-connected-objects-using-opencv/42812226
 def remove_small_obj(img: np.ndarray):
     nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img.astype(np.uint8), connectivity=8)
     sizes = stats[1:, -1]
 
     obj_threshold = max(np.mean(sizes), 125)
+    if obj_threshold == np.nan:
+        obj_threshold = 125
 
     nb_components = nb_components - 1
     for i in range(0, nb_components):
@@ -91,11 +101,13 @@ def remove_small_obj(img: np.ndarray):
 
 
 def grey_dilation(x: np.ndarray):
-    gdsize = 125
+    #     gdsize = 125
+    gdsize = 250  # more dilation for binary mask
 
     return ndimage.morphology.grey_dilation(x, (gdsize, gdsize))
 
 
+# Use optional for binary mask
 def gaussian_blur(x: np.ndarray):
     gksize = 125
     gstd = 2000
@@ -110,5 +122,16 @@ cloud_mask_generate_procedure = [
     remove_dark,
     remove_small_obj,
     grey_dilation,
-    gaussian_blur  # optional for binary mask
+    gaussian_blur
+]
+
+cloud_mask_generate_procedure_binary = [
+    unsharp,
+    remove_bright,
+    average_blur,
+    remove_dark,
+    to_binary,  # if we want binary mask
+    remove_small_obj,
+    grey_dilation,
+    # gaussian_blur  # if not binary mask
 ]

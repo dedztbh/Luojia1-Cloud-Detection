@@ -10,9 +10,9 @@ Then average blurring which removes streetlights because their bright pixels are
  
 Right now the cloud mask is taking its shape. Then some noise reduction by remove dark pixels (different threshold for each chunk) and remove small connected components. 
 
-The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, I run a grey dilation and gaussian blur (only if not binary) to extend the predicted area with cloud.
+The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, I run a grey dilation and gaussian blur (we don't need it if we want binary mask) to extend the predicted area with cloud.
 
-Here is a visualization of each step on an example image. Note that all images shown here are 5 times brighter.
+Here is a visualization of each step (binary mask) on an example image. Note that all images shown here are 5 times brighter.
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/flowchart.png)
 
 Subtraction after each operation:
@@ -21,16 +21,17 @@ Subtraction after each operation:
 Addition after each operation:
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff2.png)
 
-Here is the full list of operations in core.py:
+Here is the full list of operations in core.py (binary mask):
 ```
-cloud_mask_generate_procedure = [
+cloud_mask_generate_procedure_binary = [
     unsharp,
     remove_bright,
     average_blur,
     remove_dark,
+    to_binary,  # if we want binary mask
     remove_small_obj,
     grey_dilation,
-    gaussian_blur  # optional for binary mask
+    # gaussian_blur  # if not binary mask
 ]
 ```
 
@@ -53,5 +54,5 @@ Since images from other satellite have different properties, my current set of p
 - ksize (in average_blur): The kernel size used for step average_blur. It should be odd, and higher value remove streetlight better but also is more likely to remove cloud.
 - lo (in remove_dark_single): The threshold which all pixels with value below it is removed in step remove_dark.
 - obj_threshold (in remove_small_obj): The threshold which all connected components smaller with pixel number small than it is removed. Higher value remove small bright noises but is also more likely to remove small cloud.
-- gdsize (in grey_dilation): The size of grey dilation. Use larger value for more conservative prediction.
+- gdsize (in grey_dilation): The size of grey dilation. Use larger value for more conservative prediction. Also, since there is no gaussian_blur for binary mask, this should be set a larger value for binary mask prediction.
 - gksize, gstd (in gaussian_blur): The kernel size (odd) and std for gaussian_blur.
