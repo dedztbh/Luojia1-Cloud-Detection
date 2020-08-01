@@ -90,7 +90,7 @@ def remove_small_obj(img):
     sizes = stats[1:, -1]
 
     obj_threshold = max(np.mean(sizes), 125)
-    if obj_threshold == np.nan:
+    if np.isnan(obj_threshold):
         obj_threshold = 125
 
     nb_components = nb_components - 1
