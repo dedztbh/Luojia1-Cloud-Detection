@@ -47,7 +47,7 @@ def remove_dark_single(x):
 
 # These are the steps to run on an image to generate cloud mask.
 
-def unsharp(image: np.ndarray):
+def unsharp(image):
     unsharp_kernel = np.asarray([
         [0, -1, 0],
         [-1, 5, -1],
@@ -56,20 +56,20 @@ def unsharp(image: np.ndarray):
     return cv2.filter2D(image, -1, unsharp_kernel)
 
 
-def remove_bright(x: np.ndarray):
+def remove_bright(x):
     windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [remove_bright_single])
     for window in windows:
         x[window.indices()] = window.apply(x)
     return x
 
 
-def average_blur(x: np.ndarray):
+def average_blur(x):
     ksize = 13
 
     return cv2.blur(x, (ksize, ksize))
 
 
-def remove_dark(x: np.ndarray):
+def remove_dark(x):
     windows = sw.generate(x, sw.DimOrder.HeightWidthChannel, 250, 0, [remove_dark_single])
     for window in windows:
         x[window.indices()] = window.apply(x)
@@ -85,7 +85,7 @@ def to_binary(x, threshold=0):
 
 
 # From https://stackoverflow.com/questions/42798659/how-to-remove-small-connected-objects-using-opencv/42812226
-def remove_small_obj(img: np.ndarray):
+def remove_small_obj(img):
     nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(img.astype(np.uint8), connectivity=8)
     sizes = stats[1:, -1]
 
@@ -100,7 +100,7 @@ def remove_small_obj(img: np.ndarray):
     return img
 
 
-def grey_dilation(x: np.ndarray):
+def grey_dilation(x):
     #     gdsize = 125
     gdsize = 250  # more dilation for binary mask
 
@@ -108,7 +108,7 @@ def grey_dilation(x: np.ndarray):
 
 
 # Use optional for binary mask
-def gaussian_blur(x: np.ndarray):
+def gaussian_blur(x):
     gksize = 125
     gstd = 2000
 
