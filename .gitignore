@@ -223,3 +223,6 @@ images.pkl
 data_out/
 data_mask/
 data_annotation/
+
+output/
+overlay/
