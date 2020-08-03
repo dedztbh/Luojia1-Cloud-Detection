@@ -216,6 +216,7 @@ cython_debug/
 
 .idea/
 data/
+data2/
 data_png/
 torch_fastrcnn/
 .DS_Store

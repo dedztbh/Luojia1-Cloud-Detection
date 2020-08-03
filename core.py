@@ -28,7 +28,7 @@ def pmap(f, things):
 
 
 def remove_bright_single(x):
-    hi = 73 - x.mean() * 3
+    hi = 74 - x.mean() * 2
 
     shape = x.shape
     x = np.where(x <= hi, x, 0)
@@ -37,7 +37,7 @@ def remove_bright_single(x):
 
 
 def remove_dark_single(x):
-    lo = 15 - x.mean() * 3
+    lo = 14 - x.mean() * 3
 
     shape = x.shape
     x = np.where(lo <= x, x, 0)
