@@ -7,7 +7,7 @@ Unsharp mask is usually used to improve clarity of an image. When I apply it to 
 
 Then removes all pixels over a threshold (image is chunked and each chunk have different threshold). The image is now only left with clouds and dimmer parts of the streetlights. 
 
-Then average blurring which removes streetlights because their bright pixels are scarce (and very bright pixels are already removed) so they are averaged out.
+Then average blurring removes streetlights because their bright pixels are scarce (and very bright pixels are already removed) so they are averaged out.
  
 Right now the cloud mask is taking its shape. Then some noise reduction by remove dark pixels (different threshold for each chunk) and remove small connected components. 
 
@@ -51,9 +51,12 @@ The image downloaded are stored in a stretched int32 format that can be converte
 ## Parameters
 Since images from other satellite have different properties, my current set of parameters might not work for other satellite images. Here are the list of parameters located in core.py which can be tuned:
 
-- hi (in remove_bright_single): The threshold which all pixels with value over it is removed in step remove_bright.
+- hi (in remove_bright_single): The threshold which all pixels brighter than it is removed in step remove_bright.
+- remove_bright_window_size (in remove_bright): The size of the square used for chunking the image in step remove_bright.
 - ksize (in average_blur): The kernel size used for step average_blur. It should be odd, and higher value remove streetlight better but also is more likely to remove cloud.
-- lo (in remove_dark_single): The threshold which all pixels with value below it is removed in step remove_dark.
-- obj_threshold (in remove_small_obj): The threshold which all connected components smaller with pixel number small than it is removed. Higher value remove small bright noises but is also more likely to remove small cloud.
-- gdsize (in grey_dilation): The size of grey dilation. Use larger value for more conservative prediction. Also, since there is no gaussian_blur for binary mask, this should be set a larger value for binary mask prediction.
+- lo (in remove_dark_single): The threshold which all pixels darker than it is removed in step remove_dark.
+- binary_threshold (in to_binary): The threshold which all pixel darker than it is removed in step to_binary.
+- remove_bright_window_size (in remove_bright): The size of the square used for chunking the image in step remove_dark.
+- obj_threshold (in remove_small_obj): The threshold which all connected components with pixel number smaller than it is removed. Higher value remove small bright noises but is also more likely to remove small cloud.
+- gdsize (in grey_dilation): The size of grey dilation. Use larger value for more conservative prediction. Also, since there is no gaussian_blur for binary mask, this should be set a larger value for binary mask prediction in general.
 - gksize, gstd (in gaussian_blur): The kernel size (odd) and std for gaussian_blur.
