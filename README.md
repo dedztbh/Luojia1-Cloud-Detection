@@ -1,5 +1,6 @@
 # luojia1-cloud-detection
 Detect cloud in nighttime images from Luojia-1 satellite using basic filters.
+![demo](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo.gif)
 
 ## Algorithm
 Unsharp mask is usually used to improve clarity of an image. When I apply it to the nighttime satellite image, I found that streetlights are brought out by the filter while the cloud stays pretty much the same. 
@@ -48,7 +49,7 @@ All Luojia-1 satellite data is found here: http://59.175.109.173:8888/
 The image downloaded are stored in a stretched int32 format that can be converted back to floating point with formula L = DN^(3/2)*10^-10 where DN is the digital number and L is the actual radiance in W/(m^2 * sr * μm). My current set of parameters works with 10^5 L.
 
 ## Parameters
-Since images from other satellite have different properties, my current set of parameters might not work for other satellite images. Here are some the list of parameters located in core.py:
+Since images from other satellite have different properties, my current set of parameters might not work for other satellite images. Here are the list of parameters located in core.py which can be tuned:
 
 - hi (in remove_bright_single): The threshold which all pixels with value over it is removed in step remove_bright.
 - ksize (in average_blur): The kernel size used for step average_blur. It should be odd, and higher value remove streetlight better but also is more likely to remove cloud.
