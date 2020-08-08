@@ -5,11 +5,11 @@ This demo shows the algorithm running on images from Luojia-1 satellite as it fl
 ![demo](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/demo.gif)
 
 ## Algorithm
-Unsharp mask is a high-pass filter usually used to improve clarity of an image. When applied to the nighttime satellite image from Luojia-1 satellite, the scatter of streetlights in cloudy area is greatly reduced while the cloud stays mostly intact. This makes it easier to seperate streetlight from cloud.
+Unsharp mask is a high-pass filter usually used to improve clarity of an image. When applied to the nighttime satellite image from Luojia-1 satellite, the scatter of streetlights in cloudy area is greatly reduced while the cloud stays mostly intact. This makes it easier to separate streetlights from clouds.
 
 The next step is to remove all pixels brighter than a threshold. Due to many images have very different local properties (eg. urban vs rural, cloudy vs clear), the threshold is computed and applied to individual chunks of the image. This step is able to eliminate the brighter part of streetlights. The image is now only left with clouds and dimmer parts of the streetlights. 
 
-The next step is average blurring, a low-pass filter, which removes streetlights with no nearby cloud because of their relatively bright and sparce pixels (very bright pixels are already removed in last step).
+The next step is average blurring, a low-pass filter, which removes streetlights with no nearby cloud because of their relatively bright and sparse pixels (very bright pixels are already removed in the last step).
  
 Right now the cloud mask is starting to take shape, but some noise reduction is still needed. The next step is to remove all pixels darker than a threshold. Similarly, the threshold is computed and applied to individual chunks of the image.
 
@@ -17,7 +17,7 @@ If the desired output is a binary mask instead of a gradient one, convert the im
 
 There are some remaining spotty bright noises that cannot be removed by the previous steps. The next step is to generate statistics of all connected components in the mask and remove the ones with area smaller than a threshold (eg. the mean size of all connected components). 
 
-The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, the next step is to run a grey dilation to extend the predicted area with cloud. If gradient prediction is needed, another gaussian blur can be applied to smooth out the dilated mask.
+The mask now predicts where there are certainly clouds, but there are most likely clouds near the predicted areas. To be more conservative with the prediction, the next step is to run a grey dilation to extend the predicted area with cloud. If gradient prediction is needed, another gaussian blur can be applied to smooth out the dilated mask.
 
 Here is a visualization of each step (binary mask) on an example image. Note that all images shown here are 5 times brighter.
 ![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/flowchart.png)
