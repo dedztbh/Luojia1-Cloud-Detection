@@ -1,26 +1,32 @@
 # luojia1-cloud-detection
-Detect cloud in nighttime images from Luojia-1 satellite using basic filters.
-![demo](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo.gif)
+Detect cloud in nighttime images from Luojia-1 satellite using basic filters and image processing techniques.
+
+This demo shows the algorithm running on images from Luojia-1 satellite as it flew through an area. The red is sensor reading and the green is cloud mask prediction.
+![demo](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/demo.gif)
 
 ## Algorithm
-Unsharp mask is usually used to improve clarity of an image. When I apply it to the nighttime satellite image, I found that streetlights are brought out by the filter while the cloud stays pretty much the same. 
+Unsharp mask is a high-pass filter usually used to improve clarity of an image. When applied to the nighttime satellite image from Luojia-1 satellite, the scatter of streetlights in cloudy area is greatly reduced while the cloud stays mostly intact. This makes it easier to seperate streetlight from cloud.
 
-Then removes all pixels over a threshold (image is chunked and each chunk have different threshold). The image is now only left with clouds and dimmer parts of the streetlights. 
+The next step is to remove all pixels brighter than a threshold. Due to many images have very different local properties (eg. urban vs rural, cloudy vs clear), the threshold is computed and applied to individual chunks of the image. This step is able to eliminate the brighter part of streetlights. The image is now only left with clouds and dimmer parts of the streetlights. 
 
-Then average blurring removes streetlights because their bright pixels are scarce (and very bright pixels are already removed) so they are averaged out.
+The next step is average blurring, a low-pass filter, which removes streetlights with no nearby cloud because of their relatively bright and sparce pixels (very bright pixels are already removed in last step).
  
-Right now the cloud mask is taking its shape. Then some noise reduction by remove dark pixels (different threshold for each chunk) and remove small connected components. 
+Right now the cloud mask is starting to take shape, but some noise reduction is still needed. The next step is to remove all pixels darker than a threshold. Similarly, the threshold is computed and applied to individual chunks of the image.
 
-The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, I run a grey dilation and gaussian blur (we don't need it if we want binary mask) to extend the predicted area with cloud.
+If the desired output is a binary mask instead of a gradient one, convert the image into binary.
+
+There are some remaining spotty bright noises that cannot be removed by the previous steps. The next step is to generate statistics of all connected components in the mask and remove the ones with area smaller than a threshold (eg. the mean size of all connected components). 
+
+The mask now predicts where there is certainly cloud, but there is most likely cloud near the predicted areas. To be more conservative with the prediction, the next step is to run a grey dilation to extend the predicted area with cloud. If gradient prediction is needed, another gaussian blur can be applied to smooth out the dilated mask.
 
 Here is a visualization of each step (binary mask) on an example image. Note that all images shown here are 5 times brighter.
-![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/flowchart.png)
+![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/flowchart.png)
 
 Subtraction after each operation:
-![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff.png)
+![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/diff.png)
 
 Addition after each operation:
-![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/diff2.png)
+![flowchart](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/diff2.png)
 
 Here is the full list of operations in core.py (binary mask):
 ```
