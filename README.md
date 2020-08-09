@@ -5,7 +5,7 @@ This demo shows the algorithm running on images from Luojia-1 satellite as it fl
 ![demo](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/demo.gif)
 
 ## Algorithm
-Unsharp mask is a high-pass filter usually used to improve clarity of an image. When applied to the nighttime satellite image from Luojia-1 satellite, the scatter of streetlights in cloudy area is greatly reduced while the cloud stays mostly intact. This makes it easier to separate streetlights from clouds.
+Unsharp mask is a high-pass filter usually used to improve clarity of an image. When applied to the nighttime satellite image from the Luojia-1 satellite, the scatter of streetlights in cloudy areas is greatly reduced while the cloud stays mostly intact. This makes it easier to separate streetlights from clouds.
 
 The next step is to remove all pixels brighter than a threshold. Due to many images have very different local properties (eg. urban vs rural, cloudy vs clear), the threshold is computed and applied to individual chunks of the image. This step is able to eliminate the brighter part of streetlights. The image is now only left with clouds and dimmer parts of the streetlights. 
 
