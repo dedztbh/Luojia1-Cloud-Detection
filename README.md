@@ -1,15 +1,30 @@
-# luojia1-cloud-detection
+# Luojia-1 Satellite Visible Band Nighttime Imagery Cloud Detection 
 Detect cloud in nighttime images from Luojia-1 satellite using basic filters and image processing techniques.
 
 This demo shows the algorithm running on images from Luojia-1 satellite as it flew through an area. The red is sensor reading and the green is cloud mask prediction.
 ![demo](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/demo.gif)
 
+## Table of Contents
+- [Luojia-1 Satellite Visible Band Nighttime Imagery Cloud Detection](#luojia-1-satellite-visible-band-nighttime-imagery-cloud-detection)
+  * [Table of Contents](#table-of-contents)
+  * [Algorithm](#algorithm)
+    + [Overview](#overview)
+    + [Description](#description)
+  * [Results](#results)
+  * [Files](#files)
+  * [Data](#data)
+  * [Parameters](#parameters)
+
 ## Algorithm
+### Overview
+![system_overview](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/system_overview.png)
+
+### Description
 Unsharp mask is a high-pass filter usually used to improve clarity of an image. When applied to the nighttime satellite image from the Luojia-1 satellite, the scatter of streetlights in cloudy areas is greatly reduced while the cloud stays mostly intact. This makes it easier to separate streetlights from clouds.
 
 The next step is to remove all pixels brighter than a threshold. Due to many images have very different local properties (eg. urban vs rural, cloudy vs clear), the threshold is computed and applied to individual chunks of the image. This step is able to eliminate the brighter part of streetlights. The image is now only left with clouds and dimmer parts of the streetlights. 
 
-The next step is average blurring, a low-pass filter, which removes streetlights with no nearby cloud because of their relatively bright and sparse pixels (very bright pixels are already removed in the last step).
+The next step is average blurring, a low-pass filter, which removes streetlights with no nearby cloud because of their relatively bright and sparse pixels (very bright pixels are already removed in the previous step).
  
 Right now the cloud mask is starting to take shape, but some noise reduction is still needed. The next step is to remove all pixels darker than a threshold. Similarly, the threshold is computed and applied to individual chunks of the image.
 
@@ -41,6 +56,17 @@ cloud_mask_generate_procedure_binary = [
     # gaussian_blur  # if not binary mask
 ]
 ```
+## Results
+The algorithm generally is able to correctly predict most clouds, especially those that are lit by streetlights. The following 3 pairs of images are successful examples. The red is the original image and green is the predicted cloud mask.
+![success1](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/success1.png)
+![success2](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/success2.png)
+![success3](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/success3.png)
+
+The algorithm does produce some false positive predictions, such as the below image, where there are large areas with dim streetlight. 
+![failure1](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/failure1.png)
+
+Here is another failure example. The cloud at the bottom centre which is not well-lit is not being correctly recognized, and there are some false positive cases as well.
+![failure2](https://raw.githubusercontent.com/DEDZTBH/luojia1-cloud-detection/master/demo_img/failure2.png)
 
 ## Files
 - main.ipynp: Selected 12 images and shows them and their stats at each step. Also stitched images and their cloud mask together at last.
